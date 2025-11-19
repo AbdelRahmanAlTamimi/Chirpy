@@ -1,22 +1,36 @@
-import { respondWithJSON } from "./json.js";
 import type { Request, Response } from "express";
 import { BadRequestError } from "./errors.js";
+import { NewChirp } from "../db/schema.js";
+import { createChirp, getAllChirps } from "../db/queries/chirps.js";
 
-export async function handlerChirpsValidate(req: Request, res: Response) {
-    type parameters = {
-        body: string;
-    };
+export async function handlerCreateChirp(req: Request, res: Response) {
+    const body = req.body.body;
+    const userId = req.body.userId;
+    const cleanedBody = validateChirp(body);
+    const chirp: NewChirp = { body: cleanedBody, userId: userId };
 
-    const params: parameters = req.body;
+    const newChirp = await createChirp(chirp)
+
+    res.status(201).send(newChirp)
+
+}
+
+export async function handlerGetChirps(req: Request, res: Response) {
+    const allChirps = await getAllChirps();
+    res.status(200).send(allChirps);
+}
+
+
+function validateChirp(body: string) {
 
     const maxChirpLength = 140;
-    if (params.body.length > maxChirpLength) {
+    if (body.length > maxChirpLength) {
         throw new BadRequestError(
             `Chirp is too long. Max length is ${maxChirpLength}`,
         );
     }
 
-    const words = params.body.split(" ");
+    const words = body.split(" ");
 
     const badWords = ["kerfuffle", "sharbert", "fornax"];
     for (let i = 0; i < words.length; i++) {
@@ -29,7 +43,6 @@ export async function handlerChirpsValidate(req: Request, res: Response) {
 
     const cleaned = words.join(" ");
 
-    respondWithJSON(res, 200, {
-        cleanedBody: cleaned,
-    });
+    return cleaned
 }
+

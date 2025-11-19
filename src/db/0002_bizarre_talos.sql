@@ -1,0 +1,1 @@
+-- Migration file left empty as 0001 was corrected to use uuid for user_id
