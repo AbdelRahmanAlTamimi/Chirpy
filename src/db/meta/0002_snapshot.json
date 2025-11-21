@@ -1,6 +1,6 @@
 {
-  "id": "d780ad5d-dfa2-443a-9481-69e28bd87452",
-  "prevId": "d4059b5a-d7c0-40ed-8005-3e421b3a6f8b",
+  "id": "4b827a4c-fe5f-4afe-a963-da2eac264a49",
+  "prevId": "d780ad5d-dfa2-443a-9481-69e28bd87452",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -94,6 +94,13 @@
           "type": "varchar(256)",
           "primaryKey": false,
           "notNull": true
+        },
+        "hashed_password": {
+          "name": "hashed_password",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'unset'"
         }
       },
       "indexes": {},

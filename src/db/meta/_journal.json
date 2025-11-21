@@ -15,6 +15,13 @@
       "when": 1763580411396,
       "tag": "0001_burly_galactus",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1763725402332,
+      "tag": "0002_friendly_warhawk",
+      "breakpoints": true
     }
   ]
 }
