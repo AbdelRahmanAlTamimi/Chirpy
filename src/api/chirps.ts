@@ -1,18 +1,28 @@
 import type { Request, Response } from "express";
-import { BadRequestError } from "./errors.js";
+import { BadRequestError, UserNotAuthenticatedError } from "./errors.js";
 import { NewChirp } from "../db/schema.js";
 import { createChirp, getAllChirps, getChirpById } from "../db/queries/chirps.js";
+import { getBearerToken, validateJWT } from "../auth.js";
+import { config } from "../config.js";
+import { respondWithJSON } from "./json.js";
 
 export async function handlerCreateChirp(req: Request, res: Response) {
+    // Extract and validate JWT from Authorization header
+    let userId: string;
+    try {
+        const token = getBearerToken(req);
+        userId = validateJWT(token, config.api.jwtSecret);
+    } catch (err) {
+        throw new UserNotAuthenticatedError("Invalid or missing authentication token");
+    }
+
     const body = req.body.body;
-    const userId = req.body.userId;
     const cleanedBody = validateChirp(body);
     const chirp: NewChirp = { body: cleanedBody, userId: userId };
 
     const newChirp = await createChirp(chirp)
 
-    res.status(201).send(newChirp)
-
+    respondWithJSON(res, 201, newChirp);
 }
 
 export async function handlerGetChirps(req: Request, res: Response) {
