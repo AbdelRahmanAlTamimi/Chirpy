@@ -1,6 +1,7 @@
 import argon2 from "argon2";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { Request } from "express"
+import crypto from "crypto";
 
 export async function hashPassword(password: string) {
     return argon2.hash(password);
@@ -48,4 +49,8 @@ export function getBearerToken(req: Request): string {
         throw new Error("Authorization header is missing");
     }
     return token;
+}
+
+export function makeRefreshToken(): string {
+    return crypto.randomBytes(32).toString("hex");
 }

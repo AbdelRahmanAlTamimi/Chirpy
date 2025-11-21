@@ -22,6 +22,13 @@
       "when": 1763725402332,
       "tag": "0002_friendly_warhawk",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1763738082799,
+      "tag": "0003_foamy_dragon_lord",
+      "breakpoints": true
     }
   ]
 }
