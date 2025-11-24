@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { BadRequestError, UserNotAuthenticatedError, UserForbiddenError, NotFoundError } from "./errors.js";
 import { NewChirp } from "../db/schema.js";
-import { createChirp, getAllChirps, getChirpById, deleteChirp } from "../db/queries/chirps.js";
+import { createChirp, getAllChirps, getChirpById, deleteChirp, getChirpsByAuthorId } from "../db/queries/chirps.js";
 import { getBearerToken, validateJWT } from "../auth.js";
 import { config } from "../config.js";
 import { respondWithJSON } from "./json.js";
@@ -26,8 +26,29 @@ export async function handlerCreateChirp(req: Request, res: Response) {
 }
 
 export async function handlerGetChirps(req: Request, res: Response) {
-    const allChirps = await getAllChirps();
-    res.status(200).send(allChirps);
+    let authorId = "";
+    const authorIdQuery = req.query?.authorId;
+
+    if (typeof authorIdQuery === "string") {
+        authorId = authorIdQuery;
+    }
+
+    let chirps = authorId
+        ? await getChirpsByAuthorId(authorId)
+        : await getAllChirps();
+
+    // Handle sort query parameter
+    const sortQuery = req.query?.sort;
+    const sortOrder = typeof sortQuery === "string" ? sortQuery : "asc";
+
+    if (sortOrder === "desc") {
+        chirps.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    } else {
+        // Default to asc
+        chirps.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    }
+
+    res.status(200).send(chirps);
 }
 
 export async function handlerGetChirpById(req: Request, res: Response) {
