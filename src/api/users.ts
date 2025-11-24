@@ -1,10 +1,11 @@
 import type { Request, Response } from "express";
 
-import { createUser } from "../db/queries/users.js";
-import { BadRequestError } from "./errors.js";
+import { createUser, getUserById, updateUser } from "../db/queries/users.js";
+import { BadRequestError, UserNotAuthenticatedError, UserForbiddenError } from "./errors.js";
 import { respondWithJSON } from "./json.js";
 import { NewUser } from "src/db/schema.js";
-import { hashPassword } from "../auth.js";
+import { hashPassword, getBearerToken, validateJWT } from "../auth.js";
+import { config } from "../config.js";
 
 export type UserResponse = Omit<NewUser, "hashedPassword">;
 
@@ -35,5 +36,54 @@ export async function handlerUsersCreate(req: Request, res: Response) {
         email: user.email,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
+    } satisfies UserResponse);
+}
+
+export async function handlerUsersUpdate(req: Request, res: Response) {
+    // Validate and extract the access token
+    let token: string;
+    try {
+        token = getBearerToken(req);
+    } catch (err) {
+        throw new UserNotAuthenticatedError("Missing or invalid access token");
+    }
+
+    // Validate the JWT and get the user ID
+    let userId: string;
+    try {
+        userId = validateJWT(token, config.api.jwtSecret);
+    } catch (err) {
+        throw new UserNotAuthenticatedError("Invalid or expired access token");
+    }
+
+    type parameters = {
+        email: string;
+        password: string;
+    };
+    const params: parameters = req.body;
+
+    if (!params.password || !params.email) {
+        throw new BadRequestError("Missing required fields");
+    }
+
+    // Get the user to verify they exist
+    const user = await getUserById(userId);
+    if (!user) {
+        throw new UserForbiddenError("User not found");
+    }
+
+    const hashedPassword = await hashPassword(params.password);
+
+    const updatedUser = await updateUser(userId, params.email, hashedPassword);
+
+    if (!updatedUser) {
+        throw new Error("Could not update user");
+    }
+
+    respondWithJSON(res, 200, {
+        id: updatedUser.id,
+        email: updatedUser.email,
+        createdAt: updatedUser.createdAt,
+        updatedAt: updatedUser.updatedAt,
     } satisfies UserResponse);
 }

@@ -13,7 +13,7 @@ import {
 } from "./api/middleware.js";
 import { handlerCreateChirp, handlerGetChirps, handlerGetChirpById } from "./api/chirps.js";
 import { config } from "./config.js";
-import { handlerUsersCreate } from "./api/users.js";
+import { handlerUsersCreate, handlerUsersUpdate } from "./api/users.js";
 import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/auth.js";
 
 const migrationClient = postgres(config.db.url, { max: 1 });
@@ -39,6 +39,10 @@ app.post("/admin/reset", (req, res, next) => {
 
 app.post("/api/users", (req, res, next) => {
     Promise.resolve(handlerUsersCreate(req, res)).catch(next)
+})
+
+app.put("/api/users", (req, res, next) => {
+    Promise.resolve(handlerUsersUpdate(req, res)).catch(next)
 })
 
 app.post("/api/login", (req, res, next) => {
