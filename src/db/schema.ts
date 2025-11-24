@@ -1,3 +1,4 @@
+import { boolean } from "drizzle-orm/gel-core";
 import { pgTable, timestamp, varchar, uuid, integer } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -11,6 +12,7 @@ export const users = pgTable("users", {
     hashedPassword: varchar("hashed_password", { length: 256 })
         .notNull()
         .default("unset"),
+    isChirpRed: boolean("is_chirp_red").default(false),
 });
 
 export type NewUser = typeof users.$inferInsert;
