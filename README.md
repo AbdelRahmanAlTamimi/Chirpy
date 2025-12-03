@@ -1,10 +1,10 @@
 # Chirpy
 
-A modern, full-featured HTTP server and API built with **Express**, **TypeScript**, and **PostgreSQL**. Chirpy is a Twitter-like social platform
+A modern, full-featured HTTP server and API built with **Express**, **TypeScript**, and **PostgreSQL**.Chirpy is a Twitter-like social platform 
 
 ## Project Overview
 
-Chirpy provides a complete backend solution for a micro-blogging platform with the following core features:
+Chirpy provides a backend solution for a micro-blogging platform with the following core features:
 
 - **User Management**: User registration, login, and profile updates
 - **Authentication & Authorization**: JWT-based access tokens with refresh token rotation for secure session management
