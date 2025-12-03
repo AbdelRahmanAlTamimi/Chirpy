@@ -1,6 +1,29 @@
 # Chirpy
 
-A Node.js HTTP server built with Express, TypeScript, and PostgreSQL. This server provides a RESTful API for user management, authentication, and a "chirps" feature (similar to tweets).
+A modern, full-featured HTTP server and API built with **Express**, **TypeScript**, and **PostgreSQL**. Chirpy is a Twitter-like social platform
+
+## Project Overview
+
+Chirpy provides a complete backend solution for a micro-blogging platform with the following core features:
+
+- **User Management**: User registration, login, and profile updates
+- **Authentication & Authorization**: JWT-based access tokens with refresh token rotation for secure session management
+- **Chirps (Posts)**: Create, read, and delete short messages (limited to 140 characters)
+- **Author-Only Operations**: Users can only modify their own content through permission-based checks
+- **Content Filtering**: Automatic censoring of inappropriate language
+- **RESTful API**: Clean, standard HTTP endpoints for all operations
+- **Database Persistence**: PostgreSQL with Drizzle ORM for type-safe queries
+- **Automatic Migrations**: Database schema management on server startup
+
+## Tech Stack
+
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **Language**: TypeScript
+- **Database**: PostgreSQL
+- **ORM**: Drizzle ORM
+- **Authentication**: JWT (JSON Web Tokens) with Argon2 password hashing
+- **Build Tool**: TypeScript compiler
 
 ## Prerequisites
 
